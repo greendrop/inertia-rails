@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import CommunitySection from '../components/landing/sections/CommunitySection.vue'
+import ComparisonSection from '../components/landing/sections/ComparisonSection.vue'
+import FAQSection from '../components/landing/sections/FAQSection.vue'
 import FeaturesSection from '../components/landing/sections/FeaturesSection.vue'
 import GettingStartedSection from '../components/landing/sections/GettingStartedSection.vue'
 import HeroSection from '../components/landing/sections/HeroSection.vue'
 import LandingFooter from '../components/landing/sections/LandingFooter.vue'
+import TestimonialsSection from '../components/landing/sections/TestimonialsSection.vue'
 import ValuePropSection from '../components/landing/sections/ValuePropSection.vue'
 </script>
 
@@ -15,8 +18,11 @@ import ValuePropSection from '../components/landing/sections/ValuePropSection.vu
     <main id="main">
       <HeroSection />
       <ValuePropSection />
+      <TestimonialsSection />
       <GettingStartedSection />
       <FeaturesSection />
+      <ComparisonSection />
+      <FAQSection />
       <CommunitySection />
     </main>
 
