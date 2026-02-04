@@ -2,7 +2,7 @@
 const testimonials = [
   {
     quote:
-      'Rails + Inertia.js + Postgres—it\'s the perfect stack for our AI overlords.',
+      "Rails + Inertia.js + Postgres—it's the perfect stack for our AI overlords.",
     author: 'Josh Pigford',
     role: 'Founder of Baremetrics',
     url: 'https://x.com/Shpigford',

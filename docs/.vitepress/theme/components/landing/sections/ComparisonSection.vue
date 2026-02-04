@@ -13,87 +13,77 @@
     <div class="comparison-grid">
       <!-- vs Hotwire/Turbo -->
       <div class="comparison-card">
-        <h3>Inertia vs Hotwire/Turbo</h3>
+        <div class="card-badge hotwire">vs Hotwire</div>
+        <h3>Same monolith, different view layer</h3>
         <p class="comparison-intro">
-          Both keep you in the Rails monolith. The difference is your view
-          layer.
+          Both keep you in Rails. Inertia gives you the full React/Vue/Svelte
+          ecosystem.
         </p>
 
         <div class="comparison-table">
           <div class="comparison-row header">
             <span></span>
             <span>Hotwire</span>
-            <span>Inertia</span>
+            <span class="highlight">Inertia</span>
           </div>
           <div class="comparison-row">
             <span>View layer</span>
             <span>ERB + Stimulus</span>
-            <span>React/Vue/Svelte</span>
+            <span class="highlight">React/Vue/Svelte</span>
           </div>
           <div class="comparison-row">
             <span>Interactivity</span>
-            <span>HTML over the wire</span>
-            <span>Full component state</span>
+            <span>HTML fragments</span>
+            <span class="highlight">Full component state</span>
           </div>
           <div class="comparison-row">
-            <span>JS ecosystem</span>
-            <span>Limited</span>
-            <span>Full access</span>
-          </div>
-          <div class="comparison-row">
-            <span>Learning curve</span>
-            <span>Lower for Rails devs</span>
-            <span>Lower for React/Vue devs</span>
+            <span>UI libraries</span>
+            <span>Build your own</span>
+            <span class="highlight">npm ecosystem</span>
           </div>
         </div>
 
         <p class="comparison-verdict">
-          <strong>Choose Hotwire</strong> if you prefer server-rendered HTML and
-          minimal JavaScript.<br />
-          <strong>Choose Inertia</strong> if you want React/Vue/Svelte
-          components with Rails routing.
+          <strong>Hotwire</strong> for minimal JS and server HTML.<br />
+          <strong>Inertia</strong> for modern component architecture.
         </p>
       </div>
 
       <!-- vs API-first -->
       <div class="comparison-card">
-        <h3>Inertia vs API + SPA</h3>
+        <div class="card-badge api">vs API + SPA</div>
+        <h3>Same frontend, no API hassle</h3>
         <p class="comparison-intro">
-          Both give you a modern frontend. Inertia removes the API layer.
+          Both give you React/Vue/Svelte. Inertia removes the API layer
+          entirely.
         </p>
 
         <div class="comparison-table">
           <div class="comparison-row header">
             <span></span>
             <span>API + SPA</span>
-            <span>Inertia</span>
+            <span class="highlight">Inertia</span>
           </div>
           <div class="comparison-row">
             <span>Routing</span>
-            <span>Client + server</span>
-            <span>Server only</span>
+            <span>Two routers</span>
+            <span class="highlight">Rails only</span>
           </div>
           <div class="comparison-row">
             <span>Auth</span>
-            <span>Tokens/sessions</span>
-            <span>Rails sessions</span>
+            <span>JWT/OAuth dance</span>
+            <span class="highlight">Rails sessions</span>
           </div>
           <div class="comparison-row">
-            <span>Data fetching</span>
-            <span>API calls in components</span>
-            <span>Props from controllers</span>
-          </div>
-          <div class="comparison-row">
-            <span>Deployments</span>
-            <span>Two apps</span>
-            <span>One app</span>
+            <span>Data</span>
+            <span>Fetch in useEffect</span>
+            <span class="highlight">Props from controller</span>
           </div>
         </div>
 
         <p class="comparison-verdict">
-          <strong>Choose API + SPA</strong> if you need a public API or multiple
-          clients.<br />
-          <strong>Choose Inertia</strong> if your frontend is for your app only.
+          <strong>API + SPA</strong> for public APIs or mobile apps.<br />
+          <strong>Inertia</strong> for focused web products.
         </p>
       </div>
     </div>
@@ -144,6 +134,38 @@
   border: 1px solid var(--landing-border);
   border-radius: 1rem;
   backdrop-filter: blur(12px);
+  position: relative;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.comparison-card:hover {
+  border-color: var(--landing-primary);
+  box-shadow: 0 4px 24px hsl(var(--landing-shadow-color) / 0.1);
+}
+
+.card-badge {
+  display: inline-block;
+  padding: 0.25rem 0.625rem;
+  border-radius: 9999px;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.75rem;
+}
+
+.card-badge.hotwire {
+  background: rgba(204, 0, 0, 0.1);
+  color: #cc0000;
+  border: 1px solid rgba(204, 0, 0, 0.2);
+}
+
+.card-badge.api {
+  background: rgba(99, 102, 241, 0.1);
+  color: #6366f1;
+  border: 1px solid rgba(99, 102, 241, 0.2);
 }
 
 .comparison-card h3 {
@@ -163,13 +185,13 @@
 .comparison-table {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.375rem;
   margin-bottom: 1.5rem;
 }
 
 .comparison-row {
   display: grid;
-  grid-template-columns: 1.2fr 1fr 1fr;
+  grid-template-columns: 0.8fr 1fr 1fr;
   gap: 0.75rem;
   padding: 0.625rem 0.75rem;
   background: var(--landing-surface);
@@ -197,11 +219,21 @@
   color: var(--landing-text-primary);
 }
 
+/* Highlight Inertia column */
+.comparison-row span.highlight {
+  color: var(--landing-primary);
+  font-weight: 600;
+}
+
+.comparison-row.header span.highlight {
+  color: var(--landing-primary);
+}
+
 .comparison-verdict {
   font-size: 0.875rem;
   color: var(--landing-text-secondary);
   line-height: 1.7;
-  padding-top: 0.5rem;
+  padding-top: 0.75rem;
   border-top: 1px solid var(--landing-border);
 }
 

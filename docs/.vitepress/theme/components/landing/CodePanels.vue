@@ -78,195 +78,163 @@ const updateFramework = (fw: Framework) => {
 </script>
 
 <template>
-  <div class="hero-code-panels">
-    <div class="code-panel">
-      <div class="panel-header">
-        <div class="panel-header-left">
-          <div class="window-controls" aria-hidden="true">
-            <span class="window-dot dot-close"></span>
-            <span class="window-dot dot-minimize"></span>
-            <span class="window-dot dot-maximize"></span>
-          </div>
-          <span class="panel-tab">
-            <IconRails class="tab-icon" />
-            <span class="tab-label">users_controller.rb</span>
-          </span>
-        </div>
+  <div class="split-editor">
+    <!-- Tab Bar - VS Code style, tabs connect to panes -->
+    <div class="editor-tabs">
+      <div class="tabs-group left">
+        <span class="file-tab">
+          <IconRails class="tab-icon" />
+          <span class="tab-label">users_controller.rb</span>
+        </span>
         <CopyButton :code="railsCode" :icon-only="true" />
       </div>
-      <div
-        class="code-content"
-        v-html="railsCodeHtml || `<pre><code>${railsCode}</code></pre>`"
-      />
-    </div>
-    <div class="code-connector" aria-hidden="true">
-      <div class="connector-glow"></div>
-      <svg
-        width="32"
-        height="32"
-        viewBox="0 0 24 24"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="M5 12H19M19 12L12 5M19 12L12 19"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
+      <div class="tabs-group right">
+        <FrameworkToggle
+          :model-value="selectedFramework"
+          @update:model-value="updateFramework"
         />
-      </svg>
-    </div>
-    <div class="code-panel">
-      <div class="panel-header">
-        <div class="panel-header-left">
-          <div class="window-controls" aria-hidden="true">
-            <span class="window-dot dot-close"></span>
-            <span class="window-dot dot-minimize"></span>
-            <span class="window-dot dot-maximize"></span>
-          </div>
-          <FrameworkToggle
-            :model-value="selectedFramework"
-            @update:model-value="updateFramework"
-          />
-        </div>
         <CopyButton :code="frontendCode[selectedFramework]" :icon-only="true" />
       </div>
-      <div
-        class="code-content"
-        v-html="
-          frontendCodeHtml[selectedFramework] ||
-          `<pre><code>${frontendCode[selectedFramework]}</code></pre>`
-        "
-      />
+    </div>
+
+    <!-- Split Panes -->
+    <div class="editor-panes">
+      <div class="code-pane">
+        <div
+          class="code-content"
+          v-html="railsCodeHtml || `<pre><code>${railsCode}</code></pre>`"
+        />
+      </div>
+      <div class="pane-divider" aria-hidden="true"></div>
+      <div class="code-pane">
+        <div
+          class="code-content"
+          v-html="
+            frontendCodeHtml[selectedFramework] ||
+            `<pre><code>${frontendCode[selectedFramework]}</code></pre>`
+          "
+        />
+      </div>
     </div>
   </div>
 </template>
 
 <style scoped>
-.hero-code-panels {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  gap: 1.5rem;
-  align-items: start;
+.split-editor {
   width: 100%;
   max-width: var(--landing-max-width);
   margin: 0 auto;
-  padding: 0 1.5rem;
-}
-
-.hero-code-panels .code-panel {
-  background: var(--landing-code-bg);
-  border: 1px solid var(--landing-code-border);
-  border-radius: 1rem;
+  border-radius: 0.75rem;
   overflow: hidden;
-  backdrop-filter: blur(16px);
+  background: var(--landing-code-content);
+  border: 1px solid var(--landing-code-border);
+  box-shadow: var(--landing-code-shadow);
   transition:
     border-color 0.2s ease,
-    background 0.2s ease,
     box-shadow 0.2s ease;
-  box-shadow: var(--landing-code-shadow);
 }
 
-.hero-code-panels .code-panel:hover {
-  background: var(--landing-code-bg-hover);
+.split-editor:hover {
   border-color: var(--landing-primary);
   box-shadow: var(--landing-code-shadow-hover);
 }
 
-/* Panel Header - Window Chrome */
-.hero-code-panels .panel-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0.75rem 1rem;
+/* Tab Bar - VS Code style with connected tabs */
+.editor-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   background: var(--landing-code-header);
-  border-bottom: 1px solid var(--landing-code-border);
-  min-height: 44px;
 }
 
-.hero-code-panels .panel-header-left {
+.tabs-group {
   display: flex;
-  align-items: center;
-  gap: 1rem;
+  align-items: flex-end;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem 0;
 }
 
-/* Traffic Light Dots */
-.window-controls {
-  display: flex;
-  align-items: center;
-  gap: 6px;
+.tabs-group :deep(.copy-button) {
+  margin-left: auto;
+  align-self: center;
 }
 
-.window-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  transition: opacity 0.2s ease;
+.tabs-group.left {
+  border-right: 1px solid var(--landing-code-border);
 }
 
-.window-dot.dot-close {
-  background: linear-gradient(180deg, #ff6058 0%, #e04b43 100%);
-  box-shadow: inset 0 -1px 1px rgba(0, 0, 0, 0.2);
-}
-
-.window-dot.dot-minimize {
-  background: linear-gradient(180deg, #ffbd2e 0%, #dea123 100%);
-  box-shadow: inset 0 -1px 1px rgba(0, 0, 0, 0.2);
-}
-
-.window-dot.dot-maximize {
-  background: linear-gradient(180deg, #27ca40 0%, #1aab29 100%);
-  box-shadow: inset 0 -1px 1px rgba(0, 0, 0, 0.2);
-}
-
-.code-panel:not(:hover) .window-dot {
-  opacity: 0.5;
-}
-
-/* Panel Tab - Safari-style file tab */
-.hero-code-panels .panel-tab {
+/* Tab connects to content below - no bottom border, same bg as pane */
+.file-tab {
   display: inline-flex;
   align-items: center;
   gap: 0.375rem;
   height: 32px;
   padding: 0 0.75rem;
-  background: var(--landing-code-tab-bg);
-  border-radius: 6px;
-  color: #cc0000;
-}
-
-.hero-code-panels .panel-tab .tab-icon {
-  width: 16px;
-  height: 16px;
-  flex-shrink: 0;
-}
-
-.hero-code-panels .panel-tab .tab-label {
-  font-size: 0.8125rem;
+  background: var(--landing-code-content);
+  border: 1px solid var(--landing-code-border);
+  border-bottom: none;
+  border-radius: 6px 6px 0 0;
+  font-size: 0.75rem;
   font-weight: 500;
   color: var(--landing-text-secondary);
-  letter-spacing: -0.01em;
+  position: relative;
 }
 
-/* Code Content Area */
-.hero-code-panels .code-content {
-  text-align: left;
-  overflow-x: auto;
-  max-height: 280px;
+/* Extend tab background to cover the border line */
+.file-tab::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 1px;
   background: var(--landing-code-content);
 }
 
-.hero-code-panels .code-content :deep(pre) {
+.file-tab .tab-icon {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  color: #cc0000;
+}
+
+.file-tab .tab-label {
+  letter-spacing: -0.01em;
+}
+
+/* Split Panes */
+.editor-panes {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  min-height: 240px;
+  background: var(--landing-code-content);
+  border-top: 1px solid var(--landing-code-border);
+}
+
+.code-pane {
+  overflow-x: auto;
+}
+
+.pane-divider {
+  width: 1px;
+  background: var(--landing-code-border);
+}
+
+.code-content {
+  text-align: left;
+  height: 100%;
+}
+
+.code-content :deep(pre) {
   margin: 0;
-  padding: 1.25rem 1.5rem;
+  padding: 1rem 1.25rem;
   font-size: 0.8125rem;
   line-height: 1.7;
   background: transparent !important;
   overflow-x: auto;
+  height: 100%;
 }
 
-.hero-code-panels .code-content :deep(code) {
+.code-content :deep(code) {
   font-family:
     'JetBrains Mono', ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Monaco,
     Consolas, monospace;
@@ -276,135 +244,51 @@ const updateFramework = (fw: Framework) => {
     'calt' 1;
 }
 
-.hero-code-panels .code-content :deep(.shiki) {
+.code-content :deep(.shiki) {
   background: transparent !important;
 }
 
-/* Arrow Connector - Enhanced */
-.hero-code-panels .code-connector {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding-top: 2.75rem;
-  color: var(--landing-primary);
-  position: relative;
-}
-
-.hero-code-panels .code-connector svg {
-  position: relative;
-  z-index: 1;
-  filter: drop-shadow(0 2px 4px hsl(var(--landing-shadow-color) / 0.2));
-  animation: connectorPulse 2s ease-in-out infinite;
-}
-
-.connector-glow {
-  position: absolute;
-  width: 48px;
-  height: 48px;
-  background: radial-gradient(
-    circle,
-    var(--landing-primary-subtle) 0%,
-    transparent 70%
-  );
-  border-radius: 50%;
-  animation: connectorGlow 2s ease-in-out infinite;
-}
-
-@keyframes connectorPulse {
-  0%,
-  100% {
-    opacity: 0.8;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.05);
-  }
-}
-
-@keyframes connectorGlow {
-  0%,
-  100% {
-    opacity: 0.5;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.8;
-    transform: scale(1.2);
-  }
-}
-
+/* Mobile: Stack vertically */
 @media (max-width: 960px) {
-  .hero-code-panels {
+  .editor-tabs {
     grid-template-columns: 1fr;
-    gap: 0.75rem;
   }
 
-  .hero-code-panels .code-connector {
-    transform: rotate(90deg);
-    padding: 0.5rem 0;
-    margin: -0.25rem 0;
+  .tabs-group.left {
+    border-right: none;
+    border-bottom: 1px solid var(--landing-code-border);
+    padding-bottom: 0.5rem;
   }
 
-  .hero-code-panels .code-connector .connector-glow {
+  .tabs-group.left .file-tab::after {
     display: none;
   }
 
-  .hero-code-panels .code-content {
-    max-height: none;
+  .tabs-group.left .file-tab {
+    border-bottom: 1px solid var(--landing-code-border);
+    border-radius: 6px;
   }
 
-  .hero-code-panels .panel-header {
-    padding: 0.625rem 0.875rem;
+  .editor-panes {
+    grid-template-columns: 1fr;
+    border-top: none;
   }
 
-  .window-controls {
-    display: none;
-  }
-
-  .hero-code-panels .panel-header-left {
-    gap: 0.5rem;
+  .pane-divider {
+    width: 100%;
+    height: 1px;
   }
 }
 
 @media (max-width: 640px) {
-  .hero-code-panels {
-    padding: 0;
-    gap: 0.75rem;
+  .tabs-group {
+    padding: 0.375rem 0.5rem 0;
   }
 
-  .hero-code-panels .code-content {
-    max-height: none;
-  }
-
-  .hero-code-panels .code-content :deep(pre) {
-    font-size: 0.8125rem;
-    padding: 0.875rem 0.75rem;
-    line-height: 1.6;
-  }
-
-  .hero-code-panels .panel-header {
-    padding: 0.5rem 0.75rem;
-  }
-
-  .hero-code-panels .panel-title {
+  .code-content :deep(pre) {
     font-size: 0.75rem;
-  }
-
-  .hero-code-panels .code-panel {
-    border-radius: 0.75rem;
-  }
-
-  .hero-code-panels .code-connector {
-    padding: 0.25rem 0;
-    margin: -0.125rem 0;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .hero-code-panels .code-connector svg,
-  .connector-glow {
-    animation: none;
+    padding: 0.75rem;
+    line-height: 1.6;
   }
 }
 </style>

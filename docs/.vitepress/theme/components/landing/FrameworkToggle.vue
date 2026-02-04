@@ -81,10 +81,11 @@ const handleKeydown = (event: KeyboardEvent, currentIndex: number) => {
 <style scoped>
 .framework-tabs {
   display: flex;
-  align-items: center;
-  gap: 2px;
+  align-items: flex-end;
+  gap: 0;
 }
 
+/* Base tab styles */
 .tab {
   display: flex;
   align-items: center;
@@ -92,41 +93,30 @@ const handleKeydown = (event: KeyboardEvent, currentIndex: number) => {
   gap: 0.375rem;
   height: 32px;
   border: none;
-  border-radius: 6px;
   background: transparent;
-  color: var(--landing-text-muted, #52525b);
+  color: var(--landing-text-muted);
   cursor: pointer;
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
   font-weight: 500;
   font-family: inherit;
   letter-spacing: -0.01em;
   white-space: nowrap;
-  overflow: hidden;
-  padding: 0 0.5rem;
+  padding: 0 0.625rem;
+  transition: color 0.15s ease;
 }
 
-/* Inactive tabs - icon only with tinted colors */
-.tab:not(.active) {
-  transition:
-    opacity 0.15s ease,
-    background 0.15s ease;
-}
-
-.tab:not(.active):hover {
-  background: var(--landing-code-tab-bg, rgba(0, 0, 0, 0.04));
-}
-
+/* Inactive tabs - icon only */
 .tab:not(.active) .tab-label {
   display: none;
 }
 
-/* Framework-specific colors for inactive state (tinted) */
+/* Framework-specific colors for inactive state */
 .tab.react:not(.active) {
   color: rgba(97, 218, 251, 0.4);
 }
 
 .tab.react:not(.active):hover {
-  color: rgba(97, 218, 251, 0.7);
+  color: rgba(97, 218, 251, 0.8);
 }
 
 .tab.vue:not(.active) {
@@ -134,7 +124,7 @@ const handleKeydown = (event: KeyboardEvent, currentIndex: number) => {
 }
 
 .tab.vue:not(.active):hover {
-  color: rgba(66, 184, 131, 0.7);
+  color: rgba(66, 184, 131, 0.8);
 }
 
 .tab.svelte:not(.active) {
@@ -142,41 +132,71 @@ const handleKeydown = (event: KeyboardEvent, currentIndex: number) => {
 }
 
 .tab.svelte:not(.active):hover {
-  color: rgba(255, 62, 0, 0.7);
+  color: rgba(255, 62, 0, 0.8);
 }
 
-/* Active tab - icon + filename */
+/* Active tab - VS Code connected style */
 .tab.active {
-  background: var(--landing-code-tab-bg, rgba(0, 0, 0, 0.04));
-  color: var(--landing-text-primary, #fafafa);
+  background: var(--landing-code-content);
+  border: 1px solid var(--landing-code-border);
+  border-bottom: none;
+  border-radius: 6px 6px 0 0;
   padding: 0 0.75rem;
+  position: relative;
 }
 
-/* Framework-specific colors for active state */
-.tab.active.react {
+/* Cover the border line below active tab */
+.tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--landing-code-content);
+}
+
+/* Framework-specific icon colors for active state */
+.tab.active.react .tab-icon {
   color: #61dafb;
 }
 
-.tab.active.vue {
+.tab.active.vue .tab-icon {
   color: #42b883;
 }
 
-.tab.active.svelte {
+.tab.active.svelte .tab-icon {
   color: #ff3e00;
 }
 
 .tab-icon {
-  width: 16px;
-  height: 16px;
+  width: 14px;
+  height: 14px;
   flex-shrink: 0;
 }
 
 .tab-label {
-  color: var(--landing-text-secondary, #a1a1aa);
+  color: var(--landing-text-secondary);
 }
 
 .tab:focus-visible {
-  outline: 2px solid var(--landing-primary, #2563eb);
+  outline: 2px solid var(--landing-primary);
   outline-offset: 2px;
+}
+
+/* Mobile adjustments */
+@media (max-width: 960px) {
+  .framework-tabs {
+    align-items: center;
+  }
+
+  .tab.active {
+    border: 1px solid var(--landing-code-border);
+    border-radius: 6px;
+  }
+
+  .tab.active::after {
+    display: none;
+  }
 }
 </style>

@@ -210,12 +210,14 @@ const selectSetupChoice = (choice: 'quick' | 'kit') => {
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   gap: 2rem;
-  align-items: start;
+  align-items: stretch;
   max-width: 960px;
   margin: 0 auto;
 }
 
 .setup-option {
+  display: flex;
+  flex-direction: column;
   padding: 1.75rem;
   background: var(--landing-card-bg);
   border: 1px solid var(--landing-border);
@@ -327,7 +329,6 @@ const selectSetupChoice = (choice: 'quick' | 'kit') => {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding-top: 3rem;
 }
 
 .setup-divider span {

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onUnmounted, ref } from 'vue'
+import { ref } from 'vue'
 import {
   IconInertia,
   IconRails,
@@ -8,58 +8,40 @@ import {
   IconVue,
 } from '../icons'
 
-const mobileFlowRef = ref<HTMLElement | null>(null)
-const isFlowAnimating = ref(false)
-const activeFramework = ref<string | null>(null)
+const flowRef = ref<HTMLElement | null>(null)
 
-// Track timeout IDs for cleanup
-const flowTimeoutIds: ReturnType<typeof setTimeout>[] = []
+// Hover states
+const hoveredNode = ref<string | null>(null)
 
-const triggerFlowBurst = () => {
-  isFlowAnimating.value = true
-  activeFramework.value = null
-  const timeoutId = setTimeout(() => {
-    isFlowAnimating.value = false
-  }, 1500)
-  flowTimeoutIds.push(timeoutId)
+const setHovered = (node: string | null) => {
+  hoveredNode.value = node
 }
-
-const highlightFramework = (framework: string) => {
-  activeFramework.value = activeFramework.value === framework ? null : framework
-  isFlowAnimating.value = true
-  const timeoutId = setTimeout(() => {
-    isFlowAnimating.value = false
-  }, 1200)
-  flowTimeoutIds.push(timeoutId)
-}
-
-// Cleanup timeouts on unmount
-onUnmounted(() => {
-  flowTimeoutIds.forEach((id) => clearTimeout(id))
-})
 
 defineExpose({
-  mobileFlowRef,
-  isFlowAnimating,
-  activeFramework,
-  triggerFlowBurst,
-  highlightFramework,
+  flowRef,
+  hoveredNode,
 })
 </script>
 
 <template>
   <div
-    ref="mobileFlowRef"
-    class="mobile-flow-visual"
+    ref="flowRef"
+    class="flow-visual"
     :class="{
-      animating: isFlowAnimating,
-      [`active-${activeFramework}`]: activeFramework,
+      'hover-rails': hoveredNode === 'rails',
+      'hover-inertia': hoveredNode === 'inertia',
+      'hover-react': hoveredNode === 'react',
+      'hover-vue': hoveredNode === 'vue',
+      'hover-svelte': hoveredNode === 'svelte',
     }"
   >
     <button
       class="flow-node rails-node"
       aria-label="Rails"
-      @click="triggerFlowBurst"
+      @mouseenter="setHovered('rails')"
+      @mouseleave="setHovered(null)"
+      @focus="setHovered('rails')"
+      @blur="setHovered(null)"
     >
       <IconRails />
     </button>
@@ -68,8 +50,11 @@ defineExpose({
     </div>
     <button
       class="flow-node inertia-node"
-      aria-label="Inertia - tap for animation"
-      @click="triggerFlowBurst"
+      aria-label="Inertia"
+      @mouseenter="setHovered('inertia')"
+      @mouseleave="setHovered(null)"
+      @focus="setHovered('inertia')"
+      @blur="setHovered(null)"
     >
       <IconInertia />
     </button>
@@ -81,25 +66,31 @@ defineExpose({
     <div class="flow-frameworks">
       <button
         class="flow-node react-node"
-        :class="{ active: activeFramework === 'react' }"
         aria-label="React"
-        @click="highlightFramework('react')"
+        @mouseenter="setHovered('react')"
+        @mouseleave="setHovered(null)"
+        @focus="setHovered('react')"
+        @blur="setHovered(null)"
       >
         <IconReact />
       </button>
       <button
         class="flow-node vue-node"
-        :class="{ active: activeFramework === 'vue' }"
         aria-label="Vue"
-        @click="highlightFramework('vue')"
+        @mouseenter="setHovered('vue')"
+        @mouseleave="setHovered(null)"
+        @focus="setHovered('vue')"
+        @blur="setHovered(null)"
       >
         <IconVue />
       </button>
       <button
         class="flow-node svelte-node"
-        :class="{ active: activeFramework === 'svelte' }"
         aria-label="Svelte"
-        @click="highlightFramework('svelte')"
+        @mouseenter="setHovered('svelte')"
+        @mouseleave="setHovered(null)"
+        @focus="setHovered('svelte')"
+        @blur="setHovered(null)"
       >
         <IconSvelte />
       </button>
@@ -108,36 +99,343 @@ defineExpose({
 </template>
 
 <style scoped>
-/* Mobile Flow Visual - Hidden on desktop */
-.mobile-flow-visual {
+/* Flow Visual - Inline horizontal showcase */
+.flow-visual {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  gap: 0;
+}
+
+.flow-visual > .flow-node {
+  flex-shrink: 0;
+}
+
+.flow-visual > .flow-arrow {
+  flex-shrink: 0;
+}
+
+.flow-node {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--landing-surface);
+  border: 1px solid var(--landing-border);
+  cursor: pointer;
+  transition: all 0.3s var(--ease-out-expo);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.flow-node svg {
+  width: 24px;
+  height: 24px;
+}
+
+.flow-node:hover {
+  transform: scale(1.1);
+}
+
+.flow-node:active {
+  transform: scale(0.95);
+}
+
+.rails-node {
+  color: #cc0000;
+  border-color: rgba(204, 0, 0, 0.3);
+}
+
+.rails-node:hover {
+  border-color: rgba(204, 0, 0, 0.6);
+  box-shadow: 0 2px 12px rgba(204, 0, 0, 0.2);
+}
+
+.inertia-node {
+  width: 56px;
+  height: 56px;
+  background: linear-gradient(
+    135deg,
+    var(--landing-primary) 0%,
+    var(--landing-primary-hover) 100%
+  );
+  color: white;
+  border: none;
+  box-shadow: 0 2px 8px hsl(var(--landing-shadow-color) / 0.2);
+}
+
+.inertia-node svg {
+  width: 28px;
+  height: 28px;
+}
+
+.inertia-node:hover {
+  box-shadow: 0 4px 16px hsl(var(--landing-shadow-color) / 0.3);
+}
+
+.react-node {
+  color: #61dafb;
+  border-color: rgba(97, 218, 251, 0.3);
+}
+
+.react-node:hover {
+  border-color: rgba(97, 218, 251, 0.6);
+  box-shadow: 0 2px 12px rgba(97, 218, 251, 0.2);
+}
+
+.vue-node {
+  color: #42b883;
+  border-color: rgba(66, 184, 131, 0.3);
+}
+
+.vue-node:hover {
+  border-color: rgba(66, 184, 131, 0.6);
+  box-shadow: 0 2px 12px rgba(66, 184, 131, 0.2);
+}
+
+.svelte-node {
+  color: #ff3e00;
+  border-color: rgba(255, 62, 0, 0.3);
+}
+
+.svelte-node:hover {
+  border-color: rgba(255, 62, 0, 0.6);
+  box-shadow: 0 2px 12px rgba(255, 62, 0, 0.2);
+}
+
+.flow-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--landing-text-muted);
+  position: relative;
+  width: 48px;
+  overflow: visible;
+  margin: 0 0.5rem;
+}
+
+.flow-arrow::before {
+  content: '→';
+  font-size: 1.5rem;
+  opacity: 0.4;
+}
+
+.flow-arrow-in {
+  height: 48px;
+}
+
+.flow-arrow-out {
+  height: 168px;
+  width: 100px;
+  position: relative;
+  margin: 0 0.25rem;
+}
+
+.flow-arrow-out::before {
   display: none;
 }
 
+.flow-line {
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 100%;
+  height: 2px;
+  transform-origin: left center;
+}
+
+.flow-line::before {
+  content: '→';
+  font-size: 1.5rem;
+  opacity: 0.4;
+  color: var(--landing-text-muted);
+  transition: opacity 0.3s ease;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.flow-line.top {
+  transform: rotate(-26deg);
+}
+
+.flow-line.middle {
+  transform: rotate(0deg);
+}
+
+.flow-line.bottom {
+  transform: rotate(26deg);
+}
+
+/* Particles */
+.flow-particle {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--landing-primary);
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  transition: opacity 0.3s ease;
+}
+
+.flow-arrow-in .flow-particle {
+  background: #cc0000;
+}
+
+.flow-line.top .flow-particle {
+  background: #61dafb;
+}
+.flow-line.middle .flow-particle {
+  background: #42b883;
+}
+.flow-line.bottom .flow-particle {
+  background: #ff3e00;
+}
+
+/* Default animation - synced, normal speed */
+.flow-arrow-in .flow-particle,
+.flow-line .flow-particle {
+  animation: particleFlow 2s ease-in-out infinite;
+}
+
+@keyframes particleFlow {
+  0% {
+    left: 0;
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    left: 100%;
+    opacity: 0;
+  }
+}
+
+/* === HOVER STATES === */
+
+/* Rails hover: Speed up ALL particles (data flows through entire system) */
+.flow-visual.hover-rails .flow-arrow-in .flow-particle,
+.flow-visual.hover-rails .flow-line .flow-particle {
+  animation: particleFlow 0.4s ease-out infinite;
+}
+
+.flow-visual.hover-rails .rails-node {
+  transform: scale(1.15);
+  box-shadow: 0 0 20px rgba(204, 0, 0, 0.4);
+}
+
+/* Inertia hover: Speed up ALL particles */
+.flow-visual.hover-inertia .flow-arrow-in .flow-particle,
+.flow-visual.hover-inertia .flow-line .flow-particle {
+  animation: particleFlow 0.4s ease-out infinite;
+}
+
+.flow-visual.hover-inertia .inertia-node {
+  transform: scale(1.15);
+  box-shadow: 0 0 24px hsl(var(--landing-shadow-color) / 0.4);
+}
+
+/* React hover: Speed up Rails + React particles, hide other FE particles */
+.flow-visual.hover-react .flow-arrow-in .flow-particle,
+.flow-visual.hover-react .flow-line.top .flow-particle {
+  animation: particleFlow 0.4s ease-out infinite;
+}
+
+.flow-visual.hover-react .flow-line.middle .flow-particle,
+.flow-visual.hover-react .flow-line.bottom .flow-particle {
+  animation: none;
+  opacity: 0;
+}
+
+.flow-visual.hover-react .flow-line.middle::before,
+.flow-visual.hover-react .flow-line.bottom::before {
+  opacity: 0.15;
+}
+
+.flow-visual.hover-react .react-node {
+  transform: scale(1.15);
+  box-shadow: 0 0 20px rgba(97, 218, 251, 0.5);
+}
+
+/* Vue hover: Speed up Rails + Vue particles, hide other FE particles */
+.flow-visual.hover-vue .flow-arrow-in .flow-particle,
+.flow-visual.hover-vue .flow-line.middle .flow-particle {
+  animation: particleFlow 0.4s ease-out infinite;
+}
+
+.flow-visual.hover-vue .flow-line.top .flow-particle,
+.flow-visual.hover-vue .flow-line.bottom .flow-particle {
+  animation: none;
+  opacity: 0;
+}
+
+.flow-visual.hover-vue .flow-line.top::before,
+.flow-visual.hover-vue .flow-line.bottom::before {
+  opacity: 0.15;
+}
+
+.flow-visual.hover-vue .vue-node {
+  transform: scale(1.15);
+  box-shadow: 0 0 20px rgba(66, 184, 131, 0.5);
+}
+
+/* Svelte hover: Speed up Rails + Svelte particles, hide other FE particles */
+.flow-visual.hover-svelte .flow-arrow-in .flow-particle,
+.flow-visual.hover-svelte .flow-line.bottom .flow-particle {
+  animation: particleFlow 0.4s ease-out infinite;
+}
+
+.flow-visual.hover-svelte .flow-line.top .flow-particle,
+.flow-visual.hover-svelte .flow-line.middle .flow-particle {
+  animation: none;
+  opacity: 0;
+}
+
+.flow-visual.hover-svelte .flow-line.top::before,
+.flow-visual.hover-svelte .flow-line.middle::before {
+  opacity: 0.15;
+}
+
+.flow-visual.hover-svelte .svelte-node {
+  transform: scale(1.15);
+  box-shadow: 0 0 20px rgba(255, 62, 0, 0.5);
+}
+
+.flow-frameworks {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Mobile adjustments */
 @media (max-width: 640px) {
-  /* Mobile Flow Visual - Inline horizontal showcase */
-  .mobile-flow-visual {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    margin-top: 1rem;
+  .flow-visual {
     padding: 1rem;
-    background: transparent;
-    border-radius: 0.75rem;
+  }
+
+  .flow-arrow {
+    margin: 0 0.25rem;
+  }
+
+  .flow-arrow-out {
+    width: 70px;
+    height: 136px;
+    margin: 0 0.125rem;
   }
 
   .flow-node {
-    display: flex;
-    align-items: center;
-    justify-content: center;
     width: 40px;
     height: 40px;
-    border-radius: 50%;
-    background: var(--landing-surface);
-    border: 1px solid var(--landing-border);
-    cursor: pointer;
-    transition: all 0.3s var(--ease-out-expo);
-    -webkit-tap-highlight-color: transparent;
   }
 
   .flow-node svg {
@@ -145,26 +443,9 @@ defineExpose({
     height: 20px;
   }
 
-  .flow-node:active {
-    transform: scale(0.95);
-  }
-
-  .rails-node {
-    color: #cc0000;
-    border-color: rgba(204, 0, 0, 0.3);
-  }
-
   .inertia-node {
     width: 48px;
     height: 48px;
-    background: linear-gradient(
-      135deg,
-      var(--landing-primary) 0%,
-      var(--landing-primary-hover) 100%
-    );
-    color: white;
-    border: none;
-    box-shadow: 0 2px 8px hsl(var(--landing-shadow-color) / 0.2);
   }
 
   .inertia-node svg {
@@ -172,194 +453,43 @@ defineExpose({
     height: 24px;
   }
 
-  .react-node {
-    color: #61dafb;
-    border-color: rgba(97, 218, 251, 0.3);
-  }
-
-  .vue-node {
-    color: #42b883;
-    border-color: rgba(66, 184, 131, 0.3);
-  }
-
-  .svelte-node {
-    color: #ff3e00;
-    border-color: rgba(255, 62, 0, 0.3);
-  }
-
-  .flow-node.active {
-    transform: scale(1.15);
-    box-shadow: 0 0 12px currentColor;
-  }
-
   .flow-arrow {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--landing-text-muted);
-    position: relative;
-    width: 40px;
-    overflow: visible;
+    width: 36px;
   }
 
   .flow-arrow::before {
-    content: '→';
     font-size: 1.25rem;
-    opacity: 0.4;
-  }
-
-  .flow-arrow-in {
-    height: 40px;
-  }
-
-  .flow-arrow-out {
-    /* Match frameworks column: 3 icons (40px) + 2 gaps (8px) = 136px */
-    height: 136px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding: 8px 0;
-  }
-
-  .flow-arrow-out::before {
-    display: none;
-  }
-
-  .flow-line {
-    display: flex;
-    align-items: center;
-    position: relative;
-    height: 24px;
-    transform-origin: left center;
   }
 
   .flow-line::before {
-    content: '→';
     font-size: 1.25rem;
-    opacity: 0.4;
-    color: var(--landing-text-muted);
   }
 
   .flow-line.top {
-    transform: rotate(-15deg);
-  }
-
-  .flow-line.middle {
-    transform: rotate(0deg);
+    transform: rotate(-24deg);
   }
 
   .flow-line.bottom {
-    transform: rotate(15deg);
+    transform: rotate(24deg);
   }
 
   .flow-particle {
-    position: absolute;
     width: 6px;
     height: 6px;
-    border-radius: 50%;
-    background: var(--landing-primary);
-    opacity: 0;
-    left: 0;
-    top: 50%;
-    margin-top: -3px;
-  }
-
-  .flow-arrow-in .flow-particle {
-    background: #cc0000;
-  }
-
-  /* Color particles to match frameworks */
-  .flow-line.top .flow-particle {
-    background: #61dafb;
-  }
-  .flow-line.middle .flow-particle {
-    background: #42b883;
-  }
-  .flow-line.bottom .flow-particle {
-    background: #ff3e00;
-  }
-
-  /* Default continuous animation */
-  .flow-arrow-in .flow-particle {
-    animation: particleFlow 1.5s ease-in-out infinite;
-  }
-
-  .flow-line .flow-particle {
-    animation: particleFlow 1.5s ease-in-out infinite;
-  }
-
-  .flow-line.middle .flow-particle {
-    animation-delay: 0.2s;
-  }
-
-  .flow-line.bottom .flow-particle {
-    animation-delay: 0.4s;
-  }
-
-  /* Speed boost on tap */
-  .mobile-flow-visual.animating .flow-arrow-in .flow-particle,
-  .mobile-flow-visual.animating .flow-line .flow-particle {
-    animation: particleFlow 0.35s ease-out infinite;
-  }
-
-  .mobile-flow-visual.animating .flow-line.middle .flow-particle {
-    animation-delay: 0.05s;
-  }
-
-  .mobile-flow-visual.animating .flow-line.bottom .flow-particle {
-    animation-delay: 0.1s;
-  }
-
-  @keyframes particleFlow {
-    0% {
-      left: 0;
-      opacity: 0;
-    }
-    15% {
-      opacity: 1;
-    }
-    85% {
-      opacity: 1;
-    }
-    100% {
-      left: 100%;
-      opacity: 0;
-    }
   }
 
   .flow-frameworks {
-    display: flex;
-    flex-direction: column;
     gap: 8px;
   }
+}
 
-  /* Highlight specific framework connections */
-  .mobile-flow-visual.active-react .react-node,
-  .mobile-flow-visual.active-vue .vue-node,
-  .mobile-flow-visual.active-svelte .svelte-node {
-    transform: scale(1.15);
-    box-shadow: 0 0 12px currentColor;
+@media (prefers-reduced-motion: reduce) {
+  .flow-particle {
+    display: none;
   }
 
-  /* Speed up only the selected framework's particle */
-  .mobile-flow-visual.active-react.animating .flow-line.top .flow-particle {
-    animation: particleFlow 0.35s ease-out infinite !important;
-  }
-  .mobile-flow-visual.active-vue.animating .flow-line.middle .flow-particle {
-    animation: particleFlow 0.35s ease-out infinite !important;
-  }
-  .mobile-flow-visual.active-svelte.animating .flow-line.bottom .flow-particle {
-    animation: particleFlow 0.35s ease-out infinite !important;
-  }
-
-  /* Pause other particles when a framework is selected */
-  .mobile-flow-visual.active-react .flow-line.middle .flow-particle,
-  .mobile-flow-visual.active-react .flow-line.bottom .flow-particle,
-  .mobile-flow-visual.active-vue .flow-line.top .flow-particle,
-  .mobile-flow-visual.active-vue .flow-line.bottom .flow-particle,
-  .mobile-flow-visual.active-svelte .flow-line.top .flow-particle,
-  .mobile-flow-visual.active-svelte .flow-line.middle .flow-particle {
-    opacity: 0.3;
+  .flow-node:hover {
+    transform: none;
   }
 }
 </style>

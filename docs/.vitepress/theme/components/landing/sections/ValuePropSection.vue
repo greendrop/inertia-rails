@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import MobileFlowVisualization from '../MobileFlowVisualization.vue'
-import OrbitVisualization from '../OrbitVisualization.vue'
+import FlowVisualization from '../MobileFlowVisualization.vue'
 </script>
 
 <template>
@@ -17,8 +16,7 @@ import OrbitVisualization from '../OrbitVisualization.vue'
           No&nbsp;state&nbsp;management&nbsp;headaches.
         </p>
       </div>
-      <OrbitVisualization />
-      <MobileFlowVisualization />
+      <FlowVisualization />
     </div>
   </section>
 </template>
@@ -94,13 +92,20 @@ import OrbitVisualization from '../OrbitVisualization.vue'
   max-width: 480px;
 }
 
+@media (max-width: 768px) {
+  .value-prop-card {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    padding: 2rem;
+  }
+}
+
 @media (max-width: 640px) {
   .value-prop {
     padding: 1.5rem 1rem;
   }
 
   .value-prop-card {
-    grid-template-columns: 1fr;
     padding: 1.5rem 1.25rem;
     text-align: center;
   }

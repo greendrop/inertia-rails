@@ -5,32 +5,37 @@ const faqs = [
   {
     question: 'Do I need to build an API?',
     answer:
-      'No. Inertia eliminates the need for a separate API. Your Rails controllers pass data directly to your React, Vue, or Svelte components as props. If you later need a public API, you can add one alongside Inertia.',
+      'No. Controllers pass data directly to components as props—no endpoints, no client-side fetching. Need a public API later? Add it alongside Inertia whenever you want.',
   },
   {
     question: 'Can I use my existing Rails authentication?',
     answer:
-      'Yes. Inertia works with standard Rails session-based authentication. Devise, Clearance, Sorcery, or custom auth—it all works. No tokens or OAuth flows required for your own frontend.',
-  },
-  {
-    question: 'How does it handle form validation?',
-    answer:
-      'Validation errors from your Rails models flow automatically to your components. Use the useForm hook to access errors by field name, just like Rails form helpers. No manual error state management.',
+      'Yes. Devise, Clearance, custom auth—whatever you use today works unchanged. Inertia uses <a href="/guide/authentication">Rails sessions</a>, so there\'s no token management to deal with.',
   },
   {
     question: 'What about SEO and server-side rendering?',
     answer:
-      'Inertia supports SSR out of the box. Your React, Vue, or Svelte components render on the server for fast first paint and full SEO compatibility. The starter kits include SSR configuration.',
+      '<a href="/guide/server-side-rendering">SSR</a> gives you fast first paint and full SEO. It runs a small Node.js process alongside Rails—the <a href="/guide/starter-kits">starter kits</a> set this up for you.',
   },
   {
-    question: 'Can I migrate incrementally from a Rails app?',
+    question: 'Can I migrate incrementally?',
     answer:
-      'Yes. Inertia can coexist with traditional Rails views. Convert pages one at a time—your ERB views and Inertia components can live side by side during migration.',
+      'Yes. ERB views and Inertia pages coexist fine. Convert one page at a time. No big-bang rewrite required.',
   },
   {
-    question: 'How does Inertia compare to Turbo/Hotwire?',
+    question: 'Is Inertia only for Laravel?',
     answer:
-      'Both keep you in the Rails monolith. Hotwire sends HTML over the wire with Stimulus for interactivity. Inertia uses React, Vue, or Svelte as your view layer with full component state. Choose based on your team\'s frontend preferences.',
+      'No. Inertia started in the Laravel ecosystem, but this adapter is actively maintained and works the same way.',
+  },
+  {
+    question: 'What if I need a mobile app later?',
+    answer:
+      'Wrap your Inertia app with <a href="https://capacitorjs.com/" target="_blank" rel="noopener">Capacitor</a> for native mobile/desktop—no API needed. Or add API endpoints alongside Inertia—they work fine together.',
+  },
+  {
+    question: 'Is it suitable for large-scale apps?',
+    answer:
+      'Yes. <a href="/guide/partial-reloads">Partial reloads</a>, <a href="/guide/code-splitting">code splitting</a>, and <a href="/guide/deferred-props">deferred props</a> keep large apps fast. Load only what you need, when you need it.',
   },
 ]
 
@@ -76,7 +81,7 @@ const toggle = (index: number) => {
           </span>
         </button>
         <div class="faq-answer">
-          <p>{{ faq.answer }}</p>
+          <p v-html="faq.answer"></p>
         </div>
       </div>
     </div>
@@ -193,6 +198,18 @@ const toggle = (index: number) => {
 
 .faq-item.open .faq-answer p {
   padding: 0 1.5rem 1.25rem;
+}
+
+.faq-answer :deep(a) {
+  color: var(--landing-primary);
+  text-decoration: none;
+  font-weight: 500;
+  transition: opacity 0.15s ease;
+}
+
+.faq-answer :deep(a:hover) {
+  opacity: 0.8;
+  text-decoration: underline;
 }
 
 @media (max-width: 640px) {
