@@ -116,6 +116,46 @@ const updateFramework = (fw: Framework) => {
         />
       </div>
     </div>
+
+    <!-- Mobile Layout: Tab + Code paired together -->
+    <div class="mobile-code-panels">
+      <div class="mobile-panel">
+        <div class="mobile-panel-header">
+          <span class="file-tab">
+            <IconRails class="tab-icon" />
+            <span class="tab-label">users_controller.rb</span>
+          </span>
+          <CopyButton :code="railsCode" :icon-only="true" />
+        </div>
+        <div class="code-pane">
+          <div
+            class="code-content"
+            v-html="railsCodeHtml || `<pre><code>${railsCode}</code></pre>`"
+          />
+        </div>
+      </div>
+      <div class="mobile-panel">
+        <div class="mobile-panel-header">
+          <FrameworkToggle
+            :model-value="selectedFramework"
+            @update:model-value="updateFramework"
+          />
+          <CopyButton
+            :code="frontendCode[selectedFramework]"
+            :icon-only="true"
+          />
+        </div>
+        <div class="code-pane">
+          <div
+            class="code-content"
+            v-html="
+              frontendCodeHtml[selectedFramework] ||
+              `<pre><code>${frontendCode[selectedFramework]}</code></pre>`
+            "
+          />
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -248,41 +288,94 @@ const updateFramework = (fw: Framework) => {
   background: transparent !important;
 }
 
-/* Mobile: Stack vertically */
+/* Mobile panels - hidden by default */
+.mobile-code-panels {
+  display: none;
+}
+
+/* Mobile: Use paired tab+code layout */
 @media (max-width: 960px) {
-  .editor-tabs {
-    grid-template-columns: 1fr;
+  .split-editor {
+    border: none;
+    background: transparent;
+    box-shadow: none;
   }
 
-  .tabs-group.left {
-    border-right: none;
-    border-bottom: 1px solid var(--landing-code-border);
-    padding-bottom: 0.5rem;
+  .split-editor:hover {
+    border-color: transparent;
+    box-shadow: none;
   }
 
-  .tabs-group.left .file-tab::after {
+  /* Hide desktop layout */
+  .editor-tabs,
+  .editor-panes {
     display: none;
   }
 
-  .tabs-group.left .file-tab {
-    border-bottom: 1px solid var(--landing-code-border);
+  /* Show mobile layout - stacked windows */
+  .mobile-code-panels {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+
+  .mobile-panel {
+    border: 1px solid var(--landing-code-border);
+    border-radius: 0.75rem;
+    overflow: hidden;
+    background: var(--landing-code-content);
+    position: relative;
+  }
+
+  /* First panel: peeks out behind */
+  .mobile-panel:first-child {
+    z-index: 1;
+    padding-bottom: 0.75rem;
+  }
+
+  /* Second panel: sits on top with shadow */
+  .mobile-panel:last-child {
+    z-index: 2;
+    box-shadow:
+      0 -4px 12px -2px rgba(0, 0, 0, 0.08),
+      0 -2px 4px -1px rgba(0, 0, 0, 0.04);
+    margin-top: -0.75rem;
+  }
+
+  .mobile-panel-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    background: var(--landing-code-header);
+  }
+
+  .mobile-panel-header :deep(.copy-button) {
+    margin-left: auto;
+  }
+
+  .mobile-panel .file-tab {
     border-radius: 6px;
   }
 
-  .editor-panes {
-    grid-template-columns: 1fr;
-    border-top: none;
+  .mobile-panel .file-tab::after {
+    display: none;
   }
 
-  .pane-divider {
-    width: 100%;
-    height: 1px;
+  .mobile-panel .code-pane {
+    background: var(--landing-code-content);
   }
 }
 
+:root.dark .mobile-panel:last-child {
+  box-shadow:
+    0 -4px 16px -2px rgba(0, 0, 0, 0.4),
+    0 -2px 6px -1px rgba(0, 0, 0, 0.2);
+}
+
 @media (max-width: 640px) {
-  .tabs-group {
-    padding: 0.375rem 0.5rem 0;
+  .mobile-panel-header {
+    padding: 0.375rem 0.5rem;
   }
 
   .code-content :deep(pre) {

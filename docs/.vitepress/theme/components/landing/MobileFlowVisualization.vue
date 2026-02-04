@@ -417,69 +417,9 @@ defineExpose({
   gap: 12px;
 }
 
-/* Mobile adjustments */
 @media (max-width: 640px) {
   .flow-visual {
-    padding: 1rem;
-  }
-
-  .flow-arrow {
-    margin: 0 0.25rem;
-  }
-
-  .flow-arrow-out {
-    width: 70px;
-    height: 136px;
-    margin: 0 0.125rem;
-  }
-
-  .flow-node {
-    width: 40px;
-    height: 40px;
-  }
-
-  .flow-node svg {
-    width: 20px;
-    height: 20px;
-  }
-
-  .inertia-node {
-    width: 48px;
-    height: 48px;
-  }
-
-  .inertia-node svg {
-    width: 24px;
-    height: 24px;
-  }
-
-  .flow-arrow {
-    width: 36px;
-  }
-
-  .flow-arrow::before {
-    font-size: 1.25rem;
-  }
-
-  .flow-line::before {
-    font-size: 1.25rem;
-  }
-
-  .flow-line.top {
-    transform: rotate(-24deg);
-  }
-
-  .flow-line.bottom {
-    transform: rotate(24deg);
-  }
-
-  .flow-particle {
-    width: 6px;
-    height: 6px;
-  }
-
-  .flow-frameworks {
-    gap: 8px;
+    zoom: 0.75;
   }
 }
 
