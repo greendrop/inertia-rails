@@ -497,7 +497,7 @@ The `success` event is not cancelable.
 
 ## Flash
 
-@available_since rails=master core=2.3.3
+@available_since rails=3.17.0 core=2.3.3
 
 The `flash` event fires when [flash data](/guide/flash-data) is received from the server. This is useful for displaying toast notifications or handling temporary data in a central location.
 

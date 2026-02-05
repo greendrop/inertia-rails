@@ -1,6 +1,6 @@
 # Flash Data
 
-@available_since rails=master core=2.3.3
+@available_since rails=3.17.0 core=2.3.3
 
 Sometimes you may wish to send one-time data to your frontend that shouldn't reappear when users navigate through browser history. Unlike regular props, flash data isn't persisted in history state, making it ideal for success messages, newly created IDs, or other temporary values.
 
