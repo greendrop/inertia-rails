@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.17.0] - 2026-02-04
+
+* Add support for use_data_inertia_head_attribute configuration option (@greendrop)
+* Fix for exception pages in Rails 8.2 (@feliperaul)
+* Improved test helpers for both RSpec and Minitest (@skryukov)
+* Add Calm Companies to Awesome page (@raulpopadineti)
+* Clarify error bags in docs (@skryukov)
+* A smattering of helpful docs updates (@skryukov)
+* Fix vit binstub (@skryukov)
+
 ## [3.16.0] - 2025-12-30
 
 * Fix optional once props (@skryukov)
@@ -232,7 +242,7 @@ Kudos to @skryukov and @PedroAugustoRamalhoDuarte for driving the features in th
 
 ## [1.7.1] - 2020-11-24
 
-* Fix the definition for InertiaRails::Lazy to avoid an uninitialized constant error when booting an application. 
+* Fix the definition for InertiaRails::Lazy to avoid an uninitialized constant error when booting an application.
 
 ## [1.7.0] - 2020-11-24
 
