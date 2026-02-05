@@ -147,7 +147,7 @@ The default value will be changed to `true` in the next major version.
 
 **Default**: `%i[notice alert]`
 
-@available_since rails=master core=2.3.3
+@available_since rails=3.17.0 core=2.3.3
 
 Specifies which Rails flash keys are exposed to the frontend. By default, only known-safe keys (`notice`, `alert`) are included.
 
@@ -236,7 +236,7 @@ When enabled, the HTML output looks like:
 **Default**: `false`
 **ENV**: `INERTIA_USE_DATA_INERTIA_HEAD_ATTRIBUTE`
 
-@available_since rails=master
+@available_since rails=3.17
 
 Controls which HTML attribute is used to mark Inertia-managed `<head>` tags.
 
