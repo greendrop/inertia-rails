@@ -37,7 +37,7 @@ module InertiaRails
       def assign_locals(params)
         if params[:locals].present?
           @view_data = params[:locals].except(:page).with_indifferent_access
-          page = params[:locals][:page] || {}
+          page = JSON.parse((params[:locals][:page] || {}).to_json)
         else
           # Sequential Inertia request
           @view_data = {}
@@ -45,28 +45,10 @@ module InertiaRails
         end
 
         page = page.with_indifferent_access
-        @props = normalize_props(page[:props])
+        @props = (page[:props] || {}).with_indifferent_access
         @component = page[:component]
         @flash = (page[:flash] || {}).with_indifferent_access
         @deferred_props = (page[:deferredProps] || {}).with_indifferent_access
-      end
-
-      def normalize_props(props)
-        values = (props || {}).with_indifferent_access
-
-        if values[:_inertia_meta].is_a?(Array)
-          values[:_inertia_meta] = values[:_inertia_meta].map do |meta|
-            if meta.is_a?(InertiaRails::MetaTag)
-              meta.as_json
-            else
-              meta.deep_symbolize_keys.tap do |h|
-                h[:tagName] = h[:tagName].to_sym if h[:tagName].is_a?(String)
-              end
-            end
-          end
-        end
-
-        values
       end
     end
 

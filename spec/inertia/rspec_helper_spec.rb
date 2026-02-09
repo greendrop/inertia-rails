@@ -94,18 +94,18 @@ RSpec.describe InertiaRails::RSpec, type: :request do
         expect_inertia.to have_props(
           _inertia_meta: [
             {
-              tagName: :meta,
+              tagName: 'meta',
               name: 'description',
               content: 'Inertia rules',
               headKey: 'first_head_key',
             },
             {
-              tagName: :title,
+              tagName: 'title',
               innerContent: 'The Inertia title',
               headKey: 'title',
             },
             {
-              tagName: :meta,
+              tagName: 'meta',
               httpEquiv: 'content-security-policy',
               content: "default-src 'self';",
               headKey: 'third_head_key',
@@ -122,18 +122,18 @@ RSpec.describe InertiaRails::RSpec, type: :request do
         expect_inertia.to have_props(
           _inertia_meta: [
             {
-              tagName: :meta,
+              tagName: 'meta',
               name: 'description',
               content: 'Inertia rules',
               headKey: 'first_head_key',
             },
             {
-              tagName: :title,
+              tagName: 'title',
               innerContent: 'The Inertia title',
               headKey: 'title',
             },
             {
-              tagName: :meta,
+              tagName: 'meta',
               httpEquiv: 'content-security-policy',
               content: "default-src 'self';",
               headKey: 'third_head_key',
