@@ -481,7 +481,7 @@ RSpec.describe InertiaRails::RSpec, type: :request do
       end
 
       it 'can retrieve deferred props directly' do
-        expect(inertia.deferred_props[:default]).to include(:level, :grit)
+        expect(inertia.deferred_props[:default]).to include('level', 'grit')
       end
 
       it 'does not include deferred props in regular props on first load' do
