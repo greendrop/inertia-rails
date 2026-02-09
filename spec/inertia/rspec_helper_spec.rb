@@ -86,6 +86,62 @@ RSpec.describe InertiaRails::RSpec, type: :request do
         expect(inertia.component).to eq 'TestComponent'
       end
     end
+
+    context 'with _inertia_meta' do
+      before { get basic_meta_path }
+
+      it 'has _inertia_meta prop' do
+        expect_inertia.to have_props(
+          _inertia_meta: [
+            {
+              tagName: 'meta',
+              name: 'description',
+              content: 'Inertia rules',
+              headKey: 'first_head_key',
+            },
+            {
+              tagName: 'title',
+              innerContent: 'The Inertia title',
+              headKey: 'title',
+            },
+            {
+              tagName: 'meta',
+              httpEquiv: 'content-security-policy',
+              content: "default-src 'self';",
+              headKey: 'third_head_key',
+            }
+          ]
+        )
+      end
+    end
+
+    context 'with _inertia_meta during sequential request' do
+      before { get basic_meta_path, headers: { 'X-Inertia': true } }
+
+      it 'has _inertia_meta prop' do
+        expect_inertia.to have_props(
+          _inertia_meta: [
+            {
+              tagName: 'meta',
+              name: 'description',
+              content: 'Inertia rules',
+              headKey: 'first_head_key',
+            },
+            {
+              tagName: 'title',
+              innerContent: 'The Inertia title',
+              headKey: 'title',
+            },
+            {
+              tagName: 'meta',
+              httpEquiv: 'content-security-policy',
+              content: "default-src 'self';",
+              headKey: 'third_head_key',
+            }
+          ]
+        )
+      end
+    end
   end
 
   describe 'deprecated inertia: true flag', inertia: true do
@@ -425,7 +481,7 @@ RSpec.describe InertiaRails::RSpec, type: :request do
       end
 
       it 'can retrieve deferred props directly' do
-        expect(inertia.deferred_props[:default]).to include(:level, :grit)
+        expect(inertia.deferred_props[:default]).to include('level', 'grit')
       end
 
       it 'does not include deferred props in regular props on first load' do

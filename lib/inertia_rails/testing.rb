@@ -37,7 +37,7 @@ module InertiaRails
       def assign_locals(params)
         if params[:locals].present?
           @view_data = params[:locals].except(:page).with_indifferent_access
-          page = params[:locals][:page] || {}
+          page = JSON.parse((params[:locals][:page] || {}).to_json)
         else
           # Sequential Inertia request
           @view_data = {}
