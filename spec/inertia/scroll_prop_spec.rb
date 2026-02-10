@@ -132,6 +132,51 @@ RSpec.describe InertiaRails::ScrollProp do
     end
   end
 
+  describe '#deferred?' do
+    it 'defaults to false' do
+      prop = described_class.new { %w[item1 item2] }
+      expect(prop.deferred?).to be false
+    end
+
+    it 'returns true when defer: true' do
+      prop = described_class.new(defer: true) { %w[item1 item2] }
+      expect(prop.deferred?).to be true
+    end
+  end
+
+  describe '#group' do
+    it 'defaults to the DeferProp default group' do
+      prop = described_class.new(defer: true) { %w[item1 item2] }
+      expect(prop.group).to eq(InertiaRails::DeferProp::DEFAULT_GROUP)
+    end
+
+    it 'accepts a custom group' do
+      prop = described_class.new(defer: true, group: 'custom') { %w[item1 item2] }
+      expect(prop.group).to eq('custom')
+    end
+  end
+
+  describe '#metadata with defer options' do
+    it 'does not leak defer and group into metadata options' do
+      metadata = {
+        page_name: 'page',
+        previous_page: nil,
+        next_page: 2,
+        current_page: 1,
+      }
+
+      prop = described_class.new(metadata: metadata, defer: true, group: 'custom') { %w[item1 item2] }
+      result = prop.metadata
+
+      expect(result).to eq(
+        pageName: 'page',
+        previousPage: nil,
+        nextPage: 2,
+        currentPage: 1
+      )
+    end
+  end
+
   describe 'edge cases' do
     let(:headers) { {} }
     let(:controller) do

@@ -6,14 +6,22 @@ module InertiaRails
   class ScrollProp < BaseProp
     prepend PropMergeable
 
+    attr_reader :group
+
     def initialize(**options, &block)
       super(&block)
 
       @merge = true
+      @deferred = options.delete(:defer) || false
+      @group = options.delete(:group) || DeferProp::DEFAULT_GROUP
       @metadata = options.delete(:metadata)
       @wrapper = options.delete(:wrapper)
 
       @options = options
+    end
+
+    def deferred?
+      @deferred
     end
 
     def call(controller)

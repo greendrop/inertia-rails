@@ -14,5 +14,9 @@ module InertiaRails
 
       @group = props[:group] || DEFAULT_GROUP
     end
+
+    def deferred?
+      true
+    end
   end
 end
