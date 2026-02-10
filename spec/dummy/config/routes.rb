@@ -41,6 +41,8 @@ Rails.application.routes.draw do
   get 'shared_deferred_props' => 'inertia_render_test#shared_deferred_props'
   get 'scroll_test' => 'inertia_render_test#scroll_test'
   get 'shared_scroll_test' => 'inertia_render_test#shared_scroll_test'
+  get 'deferred_scroll_test' => 'inertia_render_test#deferred_scroll_test'
+  get 'deferred_scroll_test_custom_group' => 'inertia_render_test#deferred_scroll_test_custom_group'
   get 'prepend_merge_test' => 'inertia_render_test#prepend_merge_test'
   get 'nested_paths_test' => 'inertia_render_test#nested_paths_test'
   get 'reset_test' => 'inertia_render_test#reset_test'

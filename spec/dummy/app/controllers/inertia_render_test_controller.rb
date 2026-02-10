@@ -167,6 +167,34 @@ class InertiaRenderTestController < ApplicationController
     render inertia: 'TestComponent'
   end
 
+  def deferred_scroll_test
+    pagy = (defined?(Pagy::Offset) ? Pagy::Offset : Pagy).new(
+      next: 2,
+      page: 1,
+      count: 100
+    )
+
+    render inertia: 'TestComponent', props: {
+      name: 'Brian',
+      users: InertiaRails.scroll(pagy, defer: true) { [{ id: 1, name: 'User 1' }, { id: 2, name: 'User 2' }] },
+    }
+  end
+
+  def deferred_scroll_test_custom_group
+    pagy = (defined?(Pagy::Offset) ? Pagy::Offset : Pagy).new(
+      next: 2,
+      page: 1,
+      count: 100
+    )
+
+    render inertia: 'TestComponent', props: {
+      name: 'Brian',
+      users: InertiaRails.scroll(pagy, defer: true, group: 'custom') do
+        [{ id: 1, name: 'User 1' }, { id: 2, name: 'User 2' }]
+      end,
+    }
+  end
+
   def prepend_merge_test
     render inertia: 'TestComponent', props: {
       prepend_prop: InertiaRails.merge(prepend: true) { %w[item1 item2] },

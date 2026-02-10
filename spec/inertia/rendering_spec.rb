@@ -682,6 +682,71 @@ RSpec.describe 'rendering inertia views', type: :request do
     end
   end
 
+  context 'deferred scroll props rendering' do
+    let(:headers) { { 'X-Inertia' => true } }
+
+    context 'on initial load' do
+      before { get '/deferred_scroll_test', headers: headers }
+
+      it 'excludes deferred scroll prop from props' do
+        expect(response).to be_successful
+        expect(response.parsed_body['props']).to eq({ 'name' => 'Brian' })
+      end
+
+      it 'includes deferred scroll prop in deferredProps' do
+        expect(response.parsed_body['deferredProps']).to eq({ 'default' => ['users'] })
+      end
+
+      it 'excludes deferred scroll prop from scrollProps' do
+        expect(response.parsed_body['scrollProps']).to be_nil
+      end
+    end
+
+    context 'on partial request' do
+      let(:headers) do
+        {
+          'X-Inertia' => true,
+          'X-Inertia-Partial-Data' => 'users',
+          'X-Inertia-Partial-Component' => 'TestComponent',
+        }
+      end
+
+      before { get '/deferred_scroll_test', headers: headers }
+
+      it 'resolves deferred scroll prop in props' do
+        expect(response).to be_successful
+        expect(response.parsed_body['props']['users']).to eq([{ 'id' => 1, 'name' => 'User 1' },
+                                                              { 'id' => 2, 'name' => 'User 2' }])
+      end
+
+      it 'includes scroll metadata in scrollProps' do
+        expect(response.parsed_body['scrollProps']).to include('users')
+        expect(response.parsed_body['scrollProps']['users']).to include(
+          'pageName' => 'page',
+          'currentPage' => 1,
+          'nextPage' => 2,
+          'previousPage' => nil
+        )
+      end
+
+      it 'includes merge props' do
+        expect(response.parsed_body['mergeProps']).to include('users')
+      end
+
+      it 'does not include deferredProps on partial request' do
+        expect(response.parsed_body['deferredProps']).to be_nil
+      end
+    end
+
+    context 'with custom group' do
+      before { get '/deferred_scroll_test_custom_group', headers: headers }
+
+      it 'uses the custom group in deferredProps' do
+        expect(response.parsed_body['deferredProps']).to eq({ 'custom' => ['users'] })
+      end
+    end
+  end
+
   context 'prepend merge props rendering' do
     let(:headers) { { 'X-Inertia' => true } }
 

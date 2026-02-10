@@ -164,7 +164,7 @@ module InertiaRails
       return if rendering_partial_component?
 
       @props.each_with_object({}) do |(key, prop), result|
-        (result[prop.group] ||= []) << key if prop.is_a?(DeferProp)
+        (result[prop.group] ||= []) << key if prop.try(:deferred?)
       end
     end
 
@@ -248,6 +248,7 @@ module InertiaRails
       @scroll_props = {}
       requested_merge_props.each do |key, prop|
         next unless prop.is_a?(ScrollProp)
+        next if prop.deferred? && !rendering_partial_component?
 
         @scroll_props[key] = prop.metadata.merge!(reset: reset_keys.include?(key))
       end
@@ -292,7 +293,7 @@ module InertiaRails
       return false if excluded_by_partial_request?(path)
 
       # Precedence: Evaluate IgnoreOnFirstLoadProp only after partial keys have been checked
-      return false if prop.is_a?(IgnoreOnFirstLoadProp) && !rendering_partial_component?
+      return false if (prop.is_a?(IgnoreOnFirstLoadProp) || prop.try(:deferred?)) && !rendering_partial_component?
 
       true
     end
